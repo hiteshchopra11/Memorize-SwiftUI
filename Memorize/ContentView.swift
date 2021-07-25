@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     
     let allEmojis = ["😀","😁","😂","😃","😄","😅","😆","😇","😈","👿","😉","😊","☺️","😋","😌","😍","😎","😏","😐","😑","😒","😓","😔","😕","😖","😗","😘","😙","😚","😛","😜"]
-    @State var emojiCount = 5
+    @State var emojiCount = 25
 
     // var bcoz is not stored in memory, it's calculated by
     // executing this(some View {}) function
@@ -27,31 +27,7 @@ struct ContentView: View {
                 }.padding(.horizontal).padding(.vertical)
                 .foregroundColor(.red)
             }
-            HStack{
-                remove
-                Spacer()
-                add
-            }
         }
-    }
-    
-    var remove:some View{
-        Button(action: {
-            if(emojiCount>0){
-                emojiCount-=1
-            }
-        }
-               , label: {
-            Image(systemName: "minus.circle").font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
-        }).padding(.horizontal).padding(.vertical)
-    }
-    
-    var add:some View{
-        Button(action: { if(emojiCount<31){
-            emojiCount+=1
-        }}, label: {
-            Image(systemName: "plus.circle").font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
-        }).padding(.horizontal).padding(.vertical)
     }
 }
 
@@ -63,11 +39,11 @@ struct CardView: View {
     var body: some View{
         ZStack {
             let shape = RoundedRectangle(cornerRadius: 20.0)
-            if(isFaceUp){
+            if(isFaceUp) {
                 shape.fill().foregroundColor(.white)
                 shape.stroke(lineWidth:3.0)
                 Text(content).font(.largeTitle)
-            }else{
+            } else {
                 RoundedRectangle(cornerRadius:20.0).fill(Color.red)
             }
         }.onTapGesture {
@@ -76,32 +52,9 @@ struct CardView: View {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().preferredColorScheme(.dark)
-        
-        ContentView().preferredColorScheme(.light)
+        ContentView().previewDevice("iPhone 12").preferredColorScheme(.dark)
+        ContentView().previewDevice("iPhone 12").preferredColorScheme(.light)
     }
 }
