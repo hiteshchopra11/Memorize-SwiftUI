@@ -9,7 +9,11 @@
 // This is our ViewModel Class
 import Foundation
 
-class EmojiMemoryGame {
+  /* Observable Objects are the objects that can publish to the world that somthing has changed,
+     similar to observables in the Android
+ */
+
+class EmojiMemoryGame : ObservableObject {
     
     /* We use static because the order in which the properties are initialized are
        random, it's not in order, so createMemoryGame simply can't depend on allEmojis
@@ -47,10 +51,18 @@ class EmojiMemoryGame {
     /* Or else we can set model as private and create a new instance which returns the model.
        This will also be read only. */
     
-    private var model : MemoryGame<String> = EmojiMemoryGame.createMemoryGame()
+    /* By using @Published keyword, anytime the model changes, it will be published and
+       then will notify the view everytime it changes. */
+    @Published private var model : MemoryGame<String> = EmojiMemoryGame.createMemoryGame()
     
     // This is an inline function
     var cards : Array<MemoryGame<String>.Card> {
         return model.cards
+    }
+    
+    //MARK: - Intent(s)
+    
+    func choose(_ card:MemoryGame<String>.Card) {
+        model.choose(card)
     }
 }
