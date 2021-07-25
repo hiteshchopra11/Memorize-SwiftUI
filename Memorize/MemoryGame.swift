@@ -7,13 +7,18 @@
 
 import Foundation
 
+// CardContent is used to describe a generic type, it can be anything
 struct MemoryGame<CardContent> {
+    
+    /* private(set) tells other classes that they can look at the model, but can't modify the same.
+       Hence this is read only. */
     private(set) var cards : Array<Card>
     
     func choose( _ card:Card){
-        
+        // TODO Lecture 4
     }
     
+    // Initializer
     init(numberOfPairsOfCards : Int , createCardContent : (Int) -> CardContent ) {
         cards = Array<Card>()
         
