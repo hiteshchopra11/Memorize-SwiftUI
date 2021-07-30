@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct EmojiMemoryGameView: View {
     /* var as it is not stored in memory, it's calculated by
      executing this(some View {}) function */
         
@@ -15,12 +15,10 @@ struct ContentView: View {
        and to achieve that we add an @ObservedObject keyword before our viewmodel, so that automatically
        observes the changes from the viewmodel.*/
     
-    @ObservedObject var viewModel: EmojiMemoryGame
+    @ObservedObject var game: EmojiMemoryGame
     
     /* Body means give me a UI that shows me what's in a Model */
     var body: some View {
-        Text("Memorize!")
-            .font(.title)
         ScrollView{
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
                 
@@ -28,11 +26,11 @@ struct ContentView: View {
                    to be identifiable. To solve this, we make our Cards as Identifiable in ViewModel
                    by adding Identifiable keyword to the */
                 
-                ForEach(viewModel.cards) { card in
+                ForEach(game.cards) { card in
                     CardView(card:card).aspectRatio(2/3,contentMode: .fit)
                         .onTapGesture {
                             // Express User's intent to perform an action
-                            viewModel.choose(card)
+                            game.choose(card)
                         }
                 }
             }.padding(.horizontal).padding(.vertical)
@@ -44,27 +42,41 @@ struct ContentView: View {
 
 
 struct CardView: View {
-    let card : MemoryGame<String>.Card
+    let card : EmojiMemoryGame.Card
+
     var body: some View{
-        ZStack {
-            let shape = RoundedRectangle(cornerRadius: 20.0)
-            if(card.isFacedUp) {
-                shape.fill().foregroundColor(.white)
-                shape.stroke(lineWidth:3.0)
-                Text(card.content).font(.largeTitle)
-            } else if card.isMatched {
-                shape.opacity(0)
-            } else {
-                RoundedRectangle(cornerRadius:20.0).fill(Color.red)
+        GeometryReader { geometry in
+            ZStack {
+                let shape = RoundedRectangle(cornerRadius:DrawingConstants.cornerRadius)
+                if(card.isFacedUp) {
+                    shape.fill().foregroundColor(.white)
+                    shape.strokeBorder(lineWidth:DrawingConstants.lineWidth)
+                    Text(card.content).font(font(in : geometry.size))
+                } else if card.isMatched {
+                    shape.opacity(0)
+                } else {
+                    shape.fill()
+                }
             }
         }
     }
+    
+    private func font(in size:CGSize) -> Font {
+        Font.system(size:min(size.width, size.height) * DrawingConstants.fontScale)
+    }
+    
+    private struct DrawingConstants {
+        static let cornerRadius: CGFloat = 20
+        static let lineWidth : CGFloat = 3
+        static let fontScale : CGFloat = 0.9
+    }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let game = EmojiMemoryGame()
-        ContentView(viewModel:game).previewDevice("iPhone 12").preferredColorScheme(.dark)
-        ContentView(viewModel:game).previewDevice("iPhone 12").preferredColorScheme(.light)
+        EmojiMemoryGameView(game:game).previewDevice("iPhone 12").preferredColorScheme(.dark)
+        EmojiMemoryGameView(game:game).previewDevice("iPhone 12").preferredColorScheme(.light)
     }
 }

@@ -8,6 +8,7 @@
 
 // This is our ViewModel Class
 import Foundation
+import SwiftUI
 
   /* Observable Objects are the objects that can publish to the world that somthing has changed,
      similar to observables in the Android
@@ -15,6 +16,7 @@ import Foundation
 
 class EmojiMemoryGame : ObservableObject {
     
+    typealias Card = MemoryGame<String>.Card
     /* We use static because the order in which the properties are initialized are
        random, it's not in order, so createMemoryGame simply can't depend on allEmojis
        because it is not gauranteed that allEmojis is initialized before createMemoryGame().
@@ -32,7 +34,7 @@ class EmojiMemoryGame : ObservableObject {
     
     private static let allEmojis = ["😀","😁","😂","😃","😄","😅","😆","😇","😈","👿","😉","😊","☺️","😋","😌","😍","😎","😏","😐","😑","😒","😓","😔","😕","😖","😗","😘","😙","😚","😛","😜"]
     
-    static func createMemoryGame() -> MemoryGame<String> {
+    private static func createMemoryGame() -> MemoryGame<String> {
         
         /* "pairIndex in" stands for Integer argument that the createCardContent
             function of the MemoryGame struct accepts. "in" is a keyword which seperates the
@@ -53,16 +55,16 @@ class EmojiMemoryGame : ObservableObject {
     
     /* By using @Published keyword, anytime the model changes, it will be published and
        then will notify the view everytime it changes. */
-    @Published private var model : MemoryGame<String> = EmojiMemoryGame.createMemoryGame()
+    @Published var model = EmojiMemoryGame.createMemoryGame()
     
     // This is an inline function
-    var cards : Array<MemoryGame<String>.Card> {
+    var cards : Array<Card> {
         return model.cards
     }
     
     //MARK: - Intent(s)
     
-    func choose(_ card:MemoryGame<String>.Card) {
+    func choose(_ card:Card) {
         model.choose(card)
     }
 }

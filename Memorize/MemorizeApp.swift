@@ -18,10 +18,10 @@ struct MemorizeApp: App {
     
     /* game is a pointer to ViewModel, so our ViewModel can still be changed,
        only the address of the ViewModel in the memory will be immutable */
-    let game = EmojiMemoryGame()
+    private let game = EmojiMemoryGame()
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel:game)
+            EmojiMemoryGameView(game:game)
         }
     }
 }

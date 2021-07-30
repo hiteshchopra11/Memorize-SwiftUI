@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 // CardContent is used to describe a generic type, it can be anything
 struct MemoryGame<CardContent> where CardContent : Equatable {
@@ -15,7 +16,10 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
     
     private(set) var cards : Array<Card>
     
-    private var indexOfTheOneAndOnlyFacedUpCard : Int?
+    private var indexOfTheOneAndOnlyFacedUpCard : Int? {
+        get { cards.indices.filter {cards[$0].isFacedUp} .oneAndOnly }
+        set { cards.indices.forEach {cards[$0].isFacedUp = ($0 == newValue)} }
+    }
     
     // Any function, which needs to be mutated, should start with a mutating keyword.
     mutating func choose( _ card:Card){
@@ -40,14 +44,10 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
                     cards[chosenIndex].isMatched = true
                     cards[potentialMatchIndex].isMatched = true
                 }
-                indexOfTheOneAndOnlyFacedUpCard = nil
+                cards[chosenIndex].isFacedUp = true
             } else {
-                for index in cards.indices {
-                    cards[index].isFacedUp = false
-                }
-                indexOfTheOneAndOnlyFacedUpCard = chosenIndex
+                cards[chosenIndex].isFacedUp.toggle()
             }
-            cards[chosenIndex].isFacedUp.toggle()
         }
     }
     
@@ -73,10 +73,20 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
     }
     
     struct Card : Identifiable {
-        var isFacedUp : Bool = false
-        var isMatched : Bool = false
-        var content : CardContent
+        var isFacedUp = false
+        var isMatched = false
+        let content : CardContent
         // If we use Identifiable, we need to pass a unique id
-        var id : Int
+        let id : Int
+    }
+}
+
+extension Array {
+    var oneAndOnly : Element? {
+        if count == 1 {
+            return first
+        } else {
+            return nil
+        }
     }
 }
