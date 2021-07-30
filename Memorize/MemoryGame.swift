@@ -46,7 +46,7 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
                 }
                 cards[chosenIndex].isFacedUp = true
             } else {
-                cards[chosenIndex].isFacedUp.toggle()
+                indexOfTheOneAndOnlyFacedUpCard = chosenIndex
             }
         }
     }
@@ -63,8 +63,7 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
     
     // Initializer
     init(numberOfPairsOfCards : Int , createCardContent : (Int) -> CardContent ) {
-        cards = Array<Card>()
-        
+        cards = []
         for pairIndex in 0..<numberOfPairsOfCards {
             let content = createCardContent(pairIndex)
             cards.append(Card(content : content , id:pairIndex*2))
@@ -88,5 +87,11 @@ extension Array {
         } else {
             return nil
         }
+    }
+}
+
+struct MemoryGame_Previews: PreviewProvider {
+    static var previews: some View {
+        /*@START_MENU_TOKEN@*/Text("Hello, World!")/*@END_MENU_TOKEN@*/
     }
 }
