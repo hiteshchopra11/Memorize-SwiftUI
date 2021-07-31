@@ -10,40 +10,43 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
     /* var as it is not stored in memory, it's calculated by
      executing this(some View {}) function */
-        
+    
     /* Redraw views when something changes(observable publishes the changes from the viewmodel)
-       and to achieve that we add an @ObservedObject keyword before our viewmodel, so that automatically
-       observes the changes from the viewmodel.*/
+     and to achieve that we add an @ObservedObject keyword before our viewmodel, so that automatically
+     observes the changes from the viewmodel.*/
     
     @ObservedObject var game: EmojiMemoryGame
     
     /* Body means give me a UI that shows me what's in a Model */
     var body: some View {
-        ScrollView{
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
-                
-                /* Make our cards identifiable, because ForEach requires array
-                   to be identifiable. To solve this, we make our Cards as Identifiable in ViewModel
-                   by adding Identifiable keyword to the */
-                
-                ForEach(game.cards) { card in
-                    CardView(card:card).aspectRatio(2/3,contentMode: .fit)
-                        .onTapGesture {
-                            // Express User's intent to perform an action
-                            game.choose(card)
-                        }
+        AspectVGrid(items:game.cards , aspectRatio : 2/3) { card in
+            cardView(for: card)
+        }
+        .padding(.horizontal).padding(.vertical)
+        .foregroundColor(.red)
+    }
+    
+    @ViewBuilder
+    private func cardView(for card: EmojiMemoryGame.Card) -> some View {
+        if card.isMatched && !card.isFacedUp {
+            Rectangle().opacity(0)
+        } else{
+            CardView(card:card)
+                .padding(4)
+                .onTapGesture {
+                    // Express User's intent to perform an action
+                    game.choose(card)
                 }
-            }.padding(.horizontal).padding(.vertical)
-            .foregroundColor(.red)
         }
     }
+    
 }
 
 
 
 struct CardView: View {
     let card : EmojiMemoryGame.Card
-
+    
     var body: some View{
         GeometryReader { geometry in
             ZStack {
@@ -51,7 +54,8 @@ struct CardView: View {
                 if(card.isFacedUp) {
                     shape.fill().foregroundColor(.white)
                     shape.strokeBorder(lineWidth:DrawingConstants.lineWidth)
-                    Text(card.content).font(font(in : geometry.size))
+                    Pie(startAngle: Angle(degrees: 270), endAngle: Angle(degrees: 30)).padding(5).opacity(0.5)
+                    Text(card.content).font(font(in : geometry.size)).opacity(0.8)
                 } else if card.isMatched {
                     shape.opacity(0)
                 } else {
@@ -66,9 +70,9 @@ struct CardView: View {
     }
     
     private struct DrawingConstants {
-        static let cornerRadius: CGFloat = 20
+        static let cornerRadius: CGFloat = 10
         static let lineWidth : CGFloat = 3
-        static let fontScale : CGFloat = 0.9
+        static let fontScale : CGFloat = 0.75
     }
 }
 

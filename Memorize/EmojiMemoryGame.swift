@@ -40,7 +40,7 @@ class EmojiMemoryGame : ObservableObject {
             function of the MemoryGame struct accepts. "in" is a keyword which seperates the
             arguments with the function body. */
         
-        MemoryGame<String>(numberOfPairsOfCards:4) { pairIndex in
+        MemoryGame<String>(numberOfPairsOfCards:6) { pairIndex in
             EmojiMemoryGame.allEmojis[pairIndex]
         }
     }
